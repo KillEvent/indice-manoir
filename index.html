@@ -2,38 +2,77 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <title>Flèche avec son</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lecture du son</title>
   <style>
-    body{font-family:system-ui,Arial,sans-serif;padding:2rem}
-    .arrow-btn{background:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;font:600 1rem system-ui}
-    .arrow{width:28px;height:28px}
-    .arrow path{transition:transform .2s;transform-origin:0 50%}
-    .arrow-btn:active .arrow path{transform:translateX(3px)}
+    :root { --fg:#111; --bg:#fff; }
+    body{font-family:system-ui,Arial,sans-serif;padding:2rem;color:var(--fg);background:var(--bg)}
+    /* Bouton rond type player */
+    .play-btn{
+      width:72px;height:72px;border-radius:50%;
+      border:2px solid var(--fg); background:var(--bg); color:var(--fg);
+      display:grid; place-items:center; cursor:pointer;
+      box-shadow:0 2px 8px rgba(0,0,0,.08);
+      transition:transform .08s ease, box-shadow .2s ease;
+    }
+    .play-btn:active{ transform:scale(.98) }
+    .icon{width:28px;height:28px;display:block}
+    .icon--pause{ display:none }               /* pause cachée par défaut */
+    .is-playing .icon--play{ display:none }    /* pendant la lecture */
+    .is-playing .icon--pause{ display:block }
+    /* Texte invisible mais accessible aux lecteurs d'écran */
+    .sr-only{
+      position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+      clip:rect(0,0,0,0);white-space:nowrap;border:0;
+    }
   </style>
 </head>
 <body>
-  <button class="arrow-btn" id="playBtn" aria-label="Jouer le son">
-    <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M2 12h18M14 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round"/>
+
+  <button class="play-btn" id="playBtn" aria-label="Lire le son">
+    <!-- Icône lecture (triangle) -->
+    <svg class="icon icon--play" viewBox="0 0 24 24" aria-hidden="true">
+      <polygon points="8,5 19,12 8,19" fill="currentColor"/>
     </svg>
-    <span>Clique ici</span>
+    <!-- Icône pause (deux barres) -->
+    <svg class="icon icon--pause" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+      <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+    </svg>
+    <span class="sr-only">Lire / arrêter le son</span>
   </button>
-  <!-- Le MP3 est au même niveau que index.html -->
+
+  <!-- Le MP3 est à la racine du dépôt, comme index.html -->
   <audio id="blip" src="blip.mp3" preload="auto"></audio>
 
   <script>
+    const btn = document.getElementById('playBtn');
     const audio = document.getElementById('blip');
-    document.getElementById('playBtn').addEventListener('click', async () => {
-      try {
+
+    function setPlayingUI(isPlaying){
+      btn.classList.toggle('is-playing', isPlaying);
+      btn.setAttribute('aria-label', isPlaying ? 'Arrêter le son' : 'Lire le son');
+    }
+
+    btn.addEventListener('click', async () => {
+      if (audio.paused) {
+        try {
+          audio.currentTime = 0;
+          await audio.play();         // nécessite un clic utilisateur
+          setPlayingUI(true);
+        } catch(e) {
+          console.warn(e);
+          alert("Impossible de lire 'blip.mp3'. Vérifie que le fichier est bien à la racine.");
+        }
+      } else {
+        audio.pause();
         audio.currentTime = 0;
-        await audio.play(); // lecture autorisée après un clic
-      } catch (e) {
-        console.warn(e);
-        alert("Impossible de lire le son. Vérifie que 'blip.mp3' est bien au même endroit que 'index.html'.");
+        setPlayingUI(false);
       }
     });
+
+    audio.addEventListener('ended', () => setPlayingUI(false));
   </script>
 </body>
 </html>
+
