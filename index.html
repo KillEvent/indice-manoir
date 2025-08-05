@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Flèche avec son</title>
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;padding:2rem}
+    .arrow-btn{background:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;font:600 1rem system-ui}
+    .arrow{width:28px;height:28px}
+    .arrow path{transition:transform .2s;transform-origin:0 50%}
+    .arrow-btn:active .arrow path{transform:translateX(3px)}
+  </style>
+</head>
+<body>
+  <button class="arrow-btn" id="playBtn" aria-label="Jouer le son">
+    <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M2 12h18M14 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Clique ici</span>
+  </button>
+
+  <audio id="blip" preload="auto">
+    <source src="assets/blip.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const audio = document.getElementById('blip');
+    document.getElementById('playBtn').addEventListener('click', () => {
+      audio.currentTime = 0;
+      audio.play().catch(console.warn);
+    });
+  </script>
+</body>
+</html>
