@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Flèche avec son</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body{font-family:system-ui,Arial,sans-serif;padding:2rem}
     .arrow-btn{background:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;font:600 1rem system-ui}
@@ -20,15 +21,19 @@
     <span>Clique ici</span>
   </button>
 
-  <audio id="blip" preload="auto">
-    <source src="assets/blip.mp3" type="audio/mpeg">
-  </audio>
+  <!-- Le MP3 est au même niveau que index.html -->
+  <audio id="blip" src="blip.mp3" preload="auto"></audio>
 
   <script>
     const audio = document.getElementById('blip');
-    document.getElementById('playBtn').addEventListener('click', () => {
-      audio.currentTime = 0;
-      audio.play().catch(console.warn);
+    document.getElementById('playBtn').addEventListener('click', async () => {
+      try {
+        audio.currentTime = 0;
+        await audio.play(); // lecture autorisée après un clic
+      } catch (e) {
+        console.warn(e);
+        alert("Impossible de lire le son. Vérifie que 'blip.mp3' est bien au même endroit que 'index.html'.");
+      }
     });
   </script>
 </body>
