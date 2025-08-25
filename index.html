@@ -56,12 +56,12 @@
     </div>
 
     <!-- Le MP3 est à la racine du dépôt, comme index.html -->
-    <audio id="blip" src="blip.mp3" preload="auto"></audio>
+    <audio id="Audiomedecin" src="Audiomedecin.mp3" preload="auto"></audio>
   </main>
 
   <script>
     const btn = document.getElementById('playBtn');
-    const audio = document.getElementById('blip');
+    const audio = document.getElementById('Audiomedecin');
 
     function setPlayingUI(isPlaying){
       btn.classList.toggle('is-playing', isPlaying);
@@ -76,7 +76,7 @@
           setPlayingUI(true);
         } catch(e) {
           console.warn(e);
-          alert("Impossible de lire 'blip.mp3'. Vérifie que le fichier est bien à la racine.");
+          alert("Impossible de lire 'Audiomedecin.mp3'. Vérifie que le fichier est bien à la racine.");
         }
       } else {
         audio.pause();
